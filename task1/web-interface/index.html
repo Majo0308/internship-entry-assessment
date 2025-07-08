@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Task1 - Maria Soliz</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+      const maxItems = 100;
+
+      function App() {
+        const [lines, setLines] = React.useState([]);
+        const items = React.useRef([]);
+
+        function isLucky(item) {
+          return item % 7 === 0;
+        }
+
+        function printRandomNumber() {
+          const item = Math.floor(Math.random() * 100) + 1;
+          items.current.push(item);
+          const line = isLucky(item) ? `${item} - Lucky number!` : item;
+          setLines((prev) => [...prev, line]);
+        }
+
+        function printSeparator() {
+          if (items.current.length % 5 === 0 && items.current.length !== 0) {
+            setLines((prev) => [...prev, "----"]);
+          }
+        }
+
+        React.useEffect(() => {
+          const interval = setInterval(() => {
+            if (items.current.length >= maxItems) {
+              clearInterval(interval);
+              return;
+            }
+            printRandomNumber();
+            printSeparator();
+          }, 1000);
+
+          return () => clearInterval(interval);
+        }, []);
+
+        return (
+          <div>
+            {lines.map((item, index) => (
+              <div key={index}>
+                <label>{item}</label>
+                <br />
+              </div>
+            ))}
+          </div>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+  </body>
+</html>
